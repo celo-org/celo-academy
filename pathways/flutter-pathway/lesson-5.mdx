@@ -1,0 +1,743 @@
+---
+title: Flutter Components
+description: Learn how to build a flutter app that interacts with a smart contract on the Celo blockchain.
+lesson: "5"
+restriction: "YesDialog"
+publishedAt: '2023-02-01'
+---
+
+### Models
+
+Forum Model is an object to represent the incoming data from our smart contract.
+
+```dart
+/// lib/models/forum.dart
+import 'dart:convert';
+
+class Forum {
+ String owner;
+ String message;
+ Forum({
+   required this.owner,
+   required this.message,
+ });
+
+
+ Forum copyWith({
+   String? owner,
+   String? message,
+ }) {
+   return Forum(
+     owner: owner ?? this.owner,
+     message: message ?? this.message,
+   );
+ }
+
+
+ Map<String, dynamic> toMap() {
+   return {
+     'owner': owner,
+     'message': message,
+   };
+ }
+
+
+ factory Forum.fromMap(List data) {
+   return Forum(
+     owner: data[2].toString(),
+     message: data[3],
+   );
+ }
+
+
+ static List<Forum> fromMaps(List data) {
+   final List<Forum> forums = [];
+   for (final item in data) {
+     final castData = item as List;
+     final state = Forum.fromMap(castData);
+     forums.add(state);
+   }
+   return forums;
+ }
+
+
+ String toJson() => json.encode(toMap());
+
+
+ factory Forum.fromJson(String source) => Forum.fromMap(json.decode(source));
+
+
+ @override
+ String toString() => 'Forum(owner: $owner, message: $message)';
+
+
+ @override
+ bool operator ==(Object other) {
+   if (identical(this, other)) return true;
+
+
+   return other is Forum && other.owner == owner && other.message == message;
+ }
+
+
+ @override
+ int get hashCode => owner.hashCode ^ message.hashCode;
+}
+```
+
+App Info Model is a simple model class to provide a simple information about our flutter app to our smart contract
+
+```dart
+/// lib/models/app_info.dart
+
+class AppInfo {
+ final String? url;
+ final String? name;
+ final String? description;
+ final List<String>? icons;
+
+
+ AppInfo({
+   this.url,
+   this.name,
+   this.description,
+   this.icons,
+ });
+}
+
+```
+
+Crypto Wallet Model is a simple class object to represent the most commonly used wallet apps on both android and iOS and their deep link.
+
+```dart
+/// lib/models/crypto_wallet.dart
+class CryptoWallet {
+ static const CryptoWallet metamask = CryptoWallet(
+     universalLink: 'https://metamask.app.link/', deeplink: 'metamask://');
+ static const CryptoWallet trustWallet = CryptoWallet(
+     universalLink: 'https://link.trustwallet.com/', deeplink: 'trust://');
+ static const CryptoWallet rainbowMe = CryptoWallet(
+     universalLink: 'https://rainbow.me/', deeplink: 'rainbow://');
+ static const CryptoWallet talken =
+     CryptoWallet(universalLink: 'https://talken.io');
+
+
+ /// universal link for iOS
+ final String universalLink;
+
+
+ /// deeplink for android
+ final String? deeplink;
+
+
+ const CryptoWallet({
+   required this.universalLink,
+   this.deeplink,
+ });
+}
+
+```
+
+### Components
+
+Chat Input Box Component contains both a text form field and a send icon. A send icon is wrapped with an InkWell widget with an onTap event that checks if the user already connects there then fires the addComment method in our wallet controller object else redirects the user to connect their wallet.
+
+```dart
+/// lib/components/chat_input_field.dart
+
+
+import 'package:flutter/material.dart';
+import 'package:flutter_web3_basic/controller/controller.dart';
+import 'package:provider/provider.dart';
+
+
+class ChatInputField extends StatefulWidget {
+ const ChatInputField({
+   Key? key,
+ }) : super(key: key);
+
+
+ @override
+ State<ChatInputField> createState() => _ChatInputFieldState();
+}
+
+
+class _ChatInputFieldState extends State<ChatInputField> {
+ TextEditingController message = TextEditingController();
+ @override
+ Widget build(BuildContext context) {
+   WalletController walletController = context.watch<WalletController>();
+   return Container(
+     padding: const EdgeInsets.symmetric(
+       horizontal: 20,
+       vertical: 20 / 2,
+     ),
+     decoration: BoxDecoration(
+       color: Theme.of(context).scaffoldBackgroundColor,
+       boxShadow: [
+         BoxShadow(
+           offset: const Offset(0, 4),
+           blurRadius: 32,
+           color: const Color(0xFF087949).withOpacity(0.08),
+         ),
+       ],
+     ),
+     child: SafeArea(
+       child: Row(
+         children: [
+           Expanded(
+             child: Container(
+               padding: const EdgeInsets.symmetric(
+                 horizontal: 20 * 0.75,
+               ),
+               decoration: BoxDecoration(
+                 color: Colors.white.withOpacity(0.05),
+                 borderRadius: BorderRadius.circular(40),
+               ),
+               child: Row(
+                 children: [
+                   Expanded(
+                     child: TextField(
+                       controller: message,
+                       decoration: const InputDecoration(
+                         hintText: "Type message",
+                         border: InputBorder.none,
+                       ),
+                     ),
+                   ),
+                   const SizedBox(width: 20 / 4),
+                   InkWell(
+                     onTap: () async {
+                       if (walletController.publicWalletAddress == null) {
+                         walletController.connectWallet(context);
+                       } else {
+                         await walletController
+                             .addComment(message.text.trim());
+                       }
+                     },
+                     child: Icon(
+                       Icons.send,
+                       color: Theme.of(context)
+                           .textTheme
+                           .bodyText1!
+                           .color!
+                           .withOpacity(0.64),
+                     ),
+                   ),
+                 ],
+               ),
+             ),
+           ),
+         ],
+       ),
+     ),
+   );
+ }
+}
+
+```
+
+Message Component is a simple custom widget that displays comment and their creator and it makes use of the Jazzicon widget to render user avatars based on their wallet address.
+
+```dart
+/// lib/components/message.dart
+
+
+import 'package:flutter/material.dart';
+import 'package:flutter_web3_basic/constant.dart';
+import 'package:flutter_web3_basic/models/forum.dart';
+import 'package:jazzicon/jazzicon.dart';
+import 'package:jazzicon/jazziconshape.dart';
+
+
+class Message extends StatefulWidget {
+ final Forum forum;
+ const Message({super.key, required this.forum});
+
+
+ @override
+ State<Message> createState() => _MessageState();
+}
+
+
+class _MessageState extends State<Message> {
+ JazziconData? jazz;
+
+
+ @override
+ void initState() {
+   jazz = Jazzicon.getJazziconData(40, address: widget.forum.owner);
+   super.initState();
+ }
+
+
+ @override
+ Widget build(BuildContext context) {
+   return Row(
+     crossAxisAlignment: CrossAxisAlignment.start,
+     children: [
+       if (jazz != null) Jazzicon.getIconWidget(jazz!),
+       const SizedBox(
+         width: 10,
+       ),
+       Container(
+         width: MediaQuery.of(context).size.width - 100,
+         decoration: const BoxDecoration(
+             color: GlobalColors.primary,
+             borderRadius: BorderRadius.all(Radius.circular(6))),
+         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+         child: Column(
+           crossAxisAlignment: CrossAxisAlignment.start,
+           children: [
+             Text(
+               widget.forum.owner,
+               style: const TextStyle(
+                   color: Colors.black,
+                   fontSize: 14,
+                   fontWeight: FontWeight.w600),
+             ),
+             const SizedBox(
+               height: 10,
+             ),
+             Text(
+               widget.forum.message,
+               style: const TextStyle(
+                   color: Colors.black,
+                   fontSize: 14,
+                   fontWeight: FontWeight.w600),
+             )
+           ],
+         ),
+       )
+     ],
+   );
+ }
+}
+
+```
+
+### Constants
+
+This file provides some constant us with some constant variables like color, RPC Url, chainId, etc.
+
+```dart
+import 'package:flutter/material.dart';
+
+
+class GlobalColors {
+ GlobalColors._();
+ static const Color primary = Color(0xFFFCFF51);
+}
+
+class GlobalConstants {
+ static const String testnetApiUrl = "https://alfajores-forno.celo.org";
+ static const String mainnettApiUrl = "https://forno.celo.org";
+ static const String bridge = "https://bridge.walletconnect.org";
+ static const String name = "Simple Forum Dapp";
+ static const String url = "https://celo.org";
+ static const String contractAddress =
+     '----';
+ static const int testnetChainId = 44787;
+ static const int mainnetChainId = 42220;
+}
+```
+
+### Utilities
+
+`WalletConnectEthereumCredentials` is a class object that implements a custom transaction sender object on the web3dart package
+
+```dart
+/// lib/utils/wallet_connet_etherum_credentials.dart
+
+
+import 'dart:typed_data';
+
+
+import 'package:walletconnect_dart/walletconnect_dart.dart';
+import 'package:web3dart/crypto.dart';
+import 'package:web3dart/web3dart.dart';
+
+
+class WalletConnectEthereumCredentials extends CustomTransactionSender {
+ WalletConnectEthereumCredentials({required this.provider});
+
+
+ final EthereumWalletConnectProvider provider;
+
+
+ @override
+ Future<EthereumAddress> extractAddress() async {
+   EthereumAddress address =
+       EthereumAddress.fromHex(provider.connector.session.accounts[0]);
+   return address;
+ }
+
+
+ EthereumAddress getEthereumAddress() {
+   final String publicAddress = provider.connector.session.accounts.first;
+   return EthereumAddress.fromHex(publicAddress);
+ }
+
+
+ @override
+ Future<String> sendTransaction(Transaction transaction) async {
+   final hash = await provider.sendTransaction(
+     from: transaction.from!.hex,
+     to: transaction.to?.hex,
+     data: transaction.data,
+     gas: transaction.maxGas,
+     gasPrice: transaction.gasPrice?.getInWei,
+     value: transaction.value?.getInWei,
+     nonce: transaction.nonce,
+   );
+
+
+   return hash;
+ }
+
+
+ @override
+ Future<MsgSignature> signToSignature(Uint8List payload,
+     {int? chainId, bool isEIP1559 = false}) {
+   // TODO: implement signToSignature
+   throw UnimplementedError();
+ }
+  @override
+ // TODO: implement address
+ EthereumAddress get address => throw UnimplementedError();
+  @override
+ MsgSignature signToEcSignature(Uint8List payload, {int? chainId, bool isEIP1559 = false}) {
+   // TODO: implement signToEcSignature
+   throw UnimplementedError();
+ }
+}
+
+```
+
+`WalletConnectHelper` is a simple object utility class for implementing Walletconnect protocol using deep linking to connect to different wallet apps e.g Trust Wallet, Metamask etc. Note at the time of testing this didn’t work with Valora Wallet App
+
+```dart
+/// lib/utils/wallet_connet.dart
+
+
+import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_web3_basic/constant.dart';
+import 'package:flutter_web3_basic/models/models.dart';
+import 'package:flutter_web3_basic/utils/utils.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:walletconnect_dart/walletconnect_dart.dart';
+
+
+/// WalletConnectHelper is an object for implement WalletConnect protocol for
+/// mobile apps using deep linking to connect with wallets.
+class WalletConnectHelper {
+ final String? bridge;
+
+
+ /// mobile app info
+ final AppInfo appInfo;
+
+
+ late WalletConnect connector;
+
+
+ SessionStatus? sessionStatus;
+ List<String> accounts = [];
+
+
+ /// Connector using brigde 'https://bridge.walletconnect.org' by default.
+ WalletConnectHelper({
+   this.bridge,
+   required this.appInfo,
+ }) {
+   connector = getWalletConnect();
+ }
+
+
+ WalletConnect getWalletConnect() {
+   final WalletConnect connector = WalletConnect(
+     bridge: bridge ?? 'https://bridge.walletconnect.org',
+     clientMeta: PeerMeta(
+       name: appInfo.name ?? 'Simple Forum Dapp',
+       description: appInfo.description ?? 'Simple Forum Dapp on Celo',
+       url: appInfo.url ?? 'https://celo.org',
+       icons: appInfo.icons ??
+           ['https://cryptologos.cc/logos/celo-celo-logo.png'],
+     ),
+   );
+   return connector;
+ }
+
+
+ //----------------------------------------------------------------
+
+
+ void reset() {
+   connector = getWalletConnect();
+ }
+
+
+ Future<bool> initSession(context, {int? chainId}) async {
+   try {
+     return await initMobileSession(chainId: chainId);
+   } catch (e) {
+     return false;
+   }
+ }
+
+
+ Future<bool> initMobileSession({int? chainId}) async {
+   if (!connector.connected) {
+     try {
+       sessionStatus = await connector.createSession(
+         chainId: chainId,
+         onDisplayUri: (uri) async {
+           await _connectWallet(displayUri: uri);
+         },
+       );
+
+
+       accounts = sessionStatus?.accounts ?? [];
+
+
+       return true;
+     } catch (e) {
+       debugPrint('createSession() - failure - $e');
+       reset();
+       return false;
+     }
+   } else {
+     return true;
+   }
+ }
+
+
+ Future<void> _connectWallet({
+   CryptoWallet wallet = CryptoWallet.metamask,
+   required String displayUri,
+ }) async {
+   var deeplink = DeeplinkUtil.getDeeplink(wallet: wallet, uri: displayUri);
+   bool isLaunch = await launchUrl(Uri.parse(deeplink),
+       mode: LaunchMode.externalApplication);
+   if (!isLaunch) {
+     throw 'connectWallet() - failure - Could not open $deeplink.';
+   }
+ }
+
+
+ WalletConnectEthereumCredentials getEthereumCredentials() {
+   EthereumWalletConnectProvider provider = EthereumWalletConnectProvider(
+       connector,
+       chainId: GlobalConstants.testnetChainId);
+
+
+   WalletConnectEthereumCredentials credentials =
+       WalletConnectEthereumCredentials(provider: provider);
+
+
+   return credentials;
+ }
+
+
+ Future<void> dispose() async {
+   connector.session.reset();
+   await connector.killSession();
+   await connector.close();
+
+
+   sessionStatus = null;
+   accounts = [];
+
+
+   reset();
+ }
+}
+
+```
+
+DeeplinkUtil is a utility class to extract deep link URLs based on mobile platform OS.
+
+```dart
+/// lib/utils/deeplink.dart
+
+
+import 'dart:io';
+
+
+import 'package:flutter_web3_basic/models/models.dart';
+
+
+class DeeplinkUtil {
+ static const wcBridge = 'wc?uri=';
+
+
+ static String getDeeplink({
+   required CryptoWallet wallet,
+   required String uri,
+ }) {
+   if (Platform.isIOS) {
+     return wallet.universalLink + wcBridge + Uri.encodeComponent(uri);
+   } else {
+     return uri;
+   }
+ }
+}
+
+```
+
+### Controllers
+
+WalletController is an object that implements the ChangeNotifier object and notifies our UI of any changes like when user connect their wallet, user add new comments, the user disconnects their wallet, etc.
+
+```dart
+/// lib/controllers/wallet.dart
+
+
+import 'package:eip55/eip55.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:web3dart/web3dart.dart';
+
+
+import 'package:flutter_web3_basic/blockcain/forumV1.g.dart';
+import 'package:flutter_web3_basic/constant.dart';
+import 'package:flutter_web3_basic/main.dart';
+import 'package:flutter_web3_basic/models/forum.dart';
+import 'package:flutter_web3_basic/models/models.dart';
+import 'package:flutter_web3_basic/utils/utils.dart';
+
+
+class WalletController extends ChangeNotifier {
+ bool balRefresh = false;
+ List? _forums;
+ List? get forums => _forums;
+
+
+ EtherAmount bal = EtherAmount.fromUnitAndValue(EtherUnit.wei, 0);
+
+
+ final WalletConnectHelper walletConnectHelper = WalletConnectHelper(
+   bridge: GlobalConstants.bridge,
+   appInfo: AppInfo(
+     name: GlobalConstants.name,
+     description: GlobalConstants.name,
+     url: GlobalConstants.url,
+   ),
+ );
+
+
+ late Web3Client web3client;
+ //late StreamChicken2Contract contract;
+
+
+ bool isConnectWallet = false;
+ String? publicWalletAddress;
+
+
+void connectWallet(context) async {
+  isConnectWallet = await walletConnectHelper.initSession(context,
+      chainId: GlobalConstants.testnetChainId);
+  if (isConnectWallet) {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const MyHomePage(
+                  title: 'Simple Forum Dapp',
+                )));
+    publicWalletAddress = walletConnectHelper
+        .getEthereumCredentials()
+        .getEthereumAddress()
+        .toString();
+    publicWalletAddress = toEIP55Address(publicWalletAddress!);
+
+
+     // Init web3client
+    initWeb3Client();
+
+
+     // get Balance
+    await getBalance();
+
+
+     // Init contract
+    await fetchComment();
+
+
+     // Update ui
+    notifyListeners();
+  }
+}
+
+
+ // Disconnet wallet
+ void disconnectWallet() {
+   walletConnectHelper.dispose();
+   isConnectWallet = false;
+   publicWalletAddress = null;
+   notifyListeners();
+ }
+
+
+ void initWeb3Client() {
+   web3client = Web3Client(GlobalConstants.testnetApiUrl, Client());
+ }
+
+
+ Future getBalance() async {
+   var address =
+       await walletConnectHelper.getEthereumCredentials().extractAddress();
+   bal = await web3client.getBalance(address);
+   notifyListeners();
+ }
+
+
+ Future<void> fetchComment() async {
+   try {
+     final forumV1 = ForumV1(
+       address: EthereumAddress.fromHex(GlobalConstants.contractAddress),
+       client: web3client,
+     );
+     final res = await forumV1.getComments('Celo Sage');
+     _forums = Forum.fromMaps(res);
+     notifyListeners();
+   } catch (e) {
+     //
+   }
+ }
+
+
+ Future<void> addComment(String message) async {
+   try {
+     final forumV1 = ForumV1(
+       address: EthereumAddress.fromHex(GlobalConstants.contractAddress),
+       client: web3client,
+     );
+     Credentials cred = walletConnectHelper.getEthereumCredentials();
+     await forumV1.addComment('Celo Sage', message,
+         credentials: cred,
+         transaction: Transaction(
+             from: walletConnectHelper
+                 .getEthereumCredentials()
+                 .getEthereumAddress()));
+     await fetchComment();
+   } catch (e) {
+     //
+     print(e);
+   }
+ }
+}
+
+```
+
+Basically below are some methods in WalletConnect Controller and their uses.
+
+`connectWallet`: This method gets called when the user clicks to connect their wallet app and with the help of wallet connect helper it automatically opens a deep link URL for a user to select and compatible wallet app and continue after a successful connection is initiated a web3 client is been created which will be used to interact with our blockchain network i.e Celo Testnet network then get the user wallet address and get user balance in case we want to display user wallet balance based on the selected network.
+
+`fetchComment`: This method makes use of our smart contract ABI object generated by `web3dart_builders` package and passes the web3Client object together will the smart contract address to create an instance that can be used to call some of our smart contract objects like fetchComment then pass the data return to our Forum Model and notify our UI to render new updates.
+
+`addComment`: As said above, an instance of forumV1 object is used to call `addComment` but for us to make a transaction we need to pass a user credential to the `addComment` method which we get from `WalletConnectEthereumCredential` Utility then we can now call fetchComment method to get new records and update our UI.
+
+`disconnectWallet`: This method helps disposed of some variables in our controller like wallet connect, isConnectWallet, etc. then once our UI get notified it automatically redirects the user to the homepage to reconnect their wallet.
+
+Note: Throughout this tutorial, we are using `Celo Sage` as our topic in the smart contract which means to have many topics you can make use of any local storage package to save user topics and fetch comments based on those topics [shared_preferences](https://pub.dev/packages/shared_preferences) is an excellent example of local storage package to go with.

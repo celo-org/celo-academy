@@ -1,0 +1,124 @@
+---
+title: Smart contract setup
+description: Learn how to set up your smart contract
+lesson: "2"
+restriction: "AddressDialog"
+publishedAt: '2023-02-01'
+---
+
+## Setup the Smart Contract
+
+Okay, now that everything is set up, let's start with our smart contract.
+
+### Design
+
+For comments, we'll need a data structure that should contain the following information:
+
+- An id
+- The topic to which the comment belongs
+- A message
+- The creator
+- A timestamp
+
+We will also need the following few things for our UI (Flutter):
+
+- A way to fetch a list of comments for a specific topic
+- A way to add a new comment
+- A way to receive updates about comments that have been added
+
+```solidity
+// SPDX-License-Identifier: MIT
+// ForumV1
+
+pragma solidity ^0.8.4;
+
+contract ForumV1 {
+
+  struct Comment {
+      uint32 id;
+      string topic;
+      address creator_address;
+      string message;
+      uint created_at;
+  }
+
+  uint32 private idCounter;
+
+  mapping(string => Comment[]) private commentsByTopic;
+
+  event CommentAdded(Comment comment);
+
+  function getComments(string calldata topic) public view returns(Comment[] memory) {
+
+      return commentsByTopic[topic];
+
+  }
+
+
+  function addComment(string calldata topic, string calldata message) public {
+
+      Comment memory comment = Comment({
+          id: idCounter,
+          topic: topic,
+          creator_address: msg.sender,
+          message: message,
+          created_at: block.timestamp
+      });
+
+      commentsByTopic[topic].push(comment);
+
+      idCounter++;
+
+      emit CommentAdded(comment);
+  }
+}
+```
+
+The ForumV1 Contract has two functions
+
+- addComment: allows you to create a new comment; it stores the created comments using topic in the commentsByTopic mapping
+- getComments: a method to access all comments by topic
+
+### Deploy Smart contract
+
+- Open your Hardhat project folder (packages/hardhat)
+
+- Copy the .envexample to a new file called .env. This is where the private key you use to deploy your contracts will be saved.
+
+- Fill in the private key with your Celo wallet private key. You might want to get some Alfajores (Testnet) coins from the Celo Faucet
+
+- Open your Contracts folder (packages/hardhat/contracts)
+
+- Add a new contract in the folder called ForumV1.sol and paste the above contract into the contract file.
+
+Your hardhat project was set up with the hardhat-deploy plugin which makes deployments very easy.
+
+To deploy, go to the deploy folder, open the 00-deploy.js file, and you will see an example deployment function for the existing Greeter contract.
+
+Add the following code to the 00-deploy.js file
+
+```js showLineNumbers
+await deploy(“ForumV1”, {
+  from: deployer,
+  args: [],
+  log: true,
+})
+```
+
+Then update the module.exports tags to include ForumV1 Contract like below.
+
+```js
+module.exports.tags = [..., "ForumV1];
+```
+
+Deploy the Contracts by running the following commands on any terminal (make sure you are in the packages/hardhat directory)
+
+```bash
+npx hardhat deploy –network alfajores
+```
+
+If all is well, you should see a message from hardhat with the transaction hash of your Contract deployment and the address of your new Contract
+
+You can now view your contract on the CELO explorer (Alfajores) using the address.
+
+Now that we have deployed our contract let’s build the dApp.

@@ -1,0 +1,30 @@
+---
+title: What is ABI?
+description: Learn about ABI and how to generate it using Hardhat and how to use it in your Flutter app.
+lesson: "4"
+restriction: "YesDialog"
+publishedAt: '2023-02-01'
+---
+
+### What is an ABI?
+
+An ABI - Application Binary Interface - defines the methods, types, and structures used to interact with your binary smart contract. You can think of it like an API, they both expose the structure or interfaces that allow other contracts or programs to call them. The ABI exposes the function signatures and variable declarations in a smart contract and is often represented in JSON.
+Hardhat often generates the ABIs for our contracts when we compile them, and the ABIs are often stored in the artifacts folder.
+
+Let’s copy our Contract ABIs into our project.
+
+Then create a folder in the project folder directory lib and create a file named `forumV1.abi.json`. Note your file name can be anything but make sure the file extension start and ends with `.abi.json`. With the help of `build_runner` & `web3dart_builders` we will be able to generate a dart contract object file which we will be using to interact with our smart contract.
+
+Run this in your terminal
+
+```bash
+flutter pub run build_runner build
+```
+
+or
+
+```bash
+flutter pub run build_runner watch
+```
+
+This will generate a dart file to represent our smart contract object named `forumV1.g.dart`.

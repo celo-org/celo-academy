@@ -1,0 +1,42 @@
+---
+title: Getting Started with Flutter and Celo
+description: Learn how to build a Flutter app that interacts with the Celo blockchain
+lesson: "1"
+restriction: "QuizDialog"
+question: "What is the name of the CLI tool that makes it easy to bootstrap a Celo-based web3 project?"
+option1: "Celo Composer"
+option2: "Celo Starter"
+option3: "Celo CLI"
+option4: "Celo Starter CLI"
+answer: "Celo Composer"
+publishedAt: '2023-02-01'
+---
+
+## Getting Started
+
+I assume that anyone going through this tutorial already understands and uses Flutter, so I will skip the setup involved in getting Flutter to work on your development computer. That means I assume you already have VS Code/Android Studio together with Android SDK and Flutter setup on your PC.
+
+\*If you are entirely new to Flutter, here [https://docs.flutter.dev/get-started/install](https://docs.flutter.dev/get-started/install) is a good tutorial you can learn from.
+
+To get started, you can clone this repository flutter-web3-celo or make use of Celo Composer.
+
+Celo Composer is a set of tools and starter templates that makes it easy for you to start your Celo-based web3 projects.
+
+You can check out Celo Composer here [https://github.com/celo-org/celo-composer/tree/main/packages/flutter-app](https://github.com/celo-org/celo-composer/tree/main/packages/flutter-app).
+
+### Using Celo Composer
+
+To start our Flutter App Project, we will use the Celo Composer CLI; the CLI makes it easy for us to select the options that we want when bootstrapping our dApp. In other to do that you need to have Node set up on your PC and you can visit Node to get started. Run this on your terminal after setup Node.
+
+```bash
+npx @celo/celo-composer create
+```
+
+Choose Flutter when asked for the framework
+
+Choose hardhat (Only Hardhat is available at the time of writing this tutorial)
+
+Your Project will now be created; you can check to make sure it has the following folders
+
+packages/hardhat - Your Hardhat Folder - Where you can keep your Contracts
+packages/flutter-app - Your Flutter project
