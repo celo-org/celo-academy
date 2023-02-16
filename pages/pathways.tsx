@@ -2,10 +2,19 @@
 /* eslint-disable @next/next/no-img-element */
 import PathwayCard from "@/components/common/PathwayCard";
 import { pathways } from "@/constants/pathways";
+import Head from "next/head";
 
 export default function Pathways() {
   return (
     <>
+      <Head>
+        <title>Celo Academy | Pathways</title>
+        <meta
+          name="description"
+          content="Celo Academy pathways are a series of lessons that will teach you how to build dApps on Celo."
+          key="desc"
+        />
+      </Head>
       <section>
         <div className="w-full">
           <section>

@@ -3,6 +3,7 @@
 import InputField from "@/components/common/input";
 import Loading from "@/components/common/Loading";
 import { useUser } from "@/context/userContext";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
@@ -77,6 +78,14 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <title>Celo Academy | Signup</title>
+        <meta
+          name="description"
+          content="Celo Academy signup page"
+          key="desc"
+        />
+      </Head>
       <section>
         <div className="w-full flex mt-16 flex-row items-center ">
           <div className="w-1/2 bg-gypsum border-2 border-black px-8 rounded-xl py-16 mx-8">

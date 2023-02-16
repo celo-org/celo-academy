@@ -11,6 +11,7 @@ import { getAllPathways, getPathwayFromSlug } from "@/utils/mdx";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
+import Head from "next/head";
 import { StaticImageData } from "next/image";
 import { useRouter } from "next/router";
 import Prism from "prismjs";
@@ -134,6 +135,11 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
 
   return (
     <>
+      <Head>
+        <title>
+          Celo Academy | {pathway.name} | Lesson {currentLesson}
+        </title>
+      </Head>
       <section>
         <div className="flex flex-row justify-between items-center space-x-5 border-[3px] border-black p-5 rounded-2xl">
           <div className="flex flex-col items-start">

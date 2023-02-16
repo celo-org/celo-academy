@@ -3,6 +3,7 @@ import LessonItem from "@/components/LessonItem";
 import { pathways } from "@/constants/pathways";
 import { getAllPathways } from "@/utils/mdx";
 import { GetStaticPaths, GetStaticProps } from "next";
+import Head from "next/head";
 import Img, { StaticImageData } from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -42,54 +43,60 @@ function Pathway({ allLessons, pathway }: Props) {
   };
 
   return (
-    <section>
-      <div className="w-full">
-        <section>
-          <div className="rounded-3xl p-10 font-noto bg-gypsum flex flex-row flex-nowrap items-center">
-            <div className="flex flex-col w-2/3 pr-8">
-              <h1 className="text-3xl font-bold">{pathway.name}</h1>
-              <h4 className="text-base mt-2">{pathway.desc}</h4>
-              <div className="h-16 mt-5">
-                <button
-                  className="button"
-                  onClick={() => {
-                    router.push(`/pathway/${slug}/lesson-0`);
-                  }}
-                >
-                  Start Pathway
-                </button>
+    <>
+      <Head>
+        <title>Celo Academy | {pathway.name}</title>
+        <meta name="description" content={pathway.desc} key="desc" />
+      </Head>
+      <section>
+        <div className="w-full">
+          <section>
+            <div className="rounded-3xl p-10 font-noto bg-gypsum flex flex-row flex-nowrap items-center">
+              <div className="flex flex-col w-2/3 pr-8">
+                <h1 className="text-3xl font-bold">{pathway.name}</h1>
+                <h4 className="text-base mt-2">{pathway.desc}</h4>
+                <div className="h-16 mt-5">
+                  <button
+                    className="button"
+                    onClick={() => {
+                      router.push(`/pathway/${slug}/lesson-0`);
+                    }}
+                  >
+                    Start Pathway
+                  </button>
+                </div>
+              </div>
+              <div className="flex flex-col w-1/3">
+                <Img
+                  src={pathway.image}
+                  className="rounded-2xl"
+                  alt="Flutter Pathway - Celo Academy"
+                />
               </div>
             </div>
-            <div className="flex flex-col w-1/3">
-              <Img
-                src={pathway.image}
-                className="rounded-2xl"
-                alt="Flutter Pathway - Celo Academy"
-              />
-            </div>
-          </div>
-        </section>
-        <section className="mt-10">
-          <h1 className="text-3xl font-noto mb-8">Pathway Structure</h1>
-          {pathwayFBData &&
-            allLessons.map((lesson) => {
-              return (
-                <LessonItem
-                  key={lesson.slug}
-                  lesson={lesson}
-                  lessonNumber={lesson.lesson}
-                  slug={slug}
-                  lastCompletedLesson={
-                    pathwayFBData && pathwayFBData.lastCompletedLesson
-                      ? pathwayFBData.lastCompletedLesson
-                      : "0"
-                  }
-                />
-              );
-            })}
-        </section>
-      </div>
-    </section>
+          </section>
+          <section className="mt-10">
+            <h1 className="text-3xl font-noto mb-8">Pathway Structure</h1>
+            {pathwayFBData &&
+              allLessons.map((lesson) => {
+                return (
+                  <LessonItem
+                    key={lesson.slug}
+                    lesson={lesson}
+                    lessonNumber={lesson.lesson}
+                    slug={slug}
+                    lastCompletedLesson={
+                      pathwayFBData && pathwayFBData.lastCompletedLesson
+                        ? pathwayFBData.lastCompletedLesson
+                        : "0"
+                    }
+                  />
+                );
+              })}
+          </section>
+        </div>
+      </section>
+    </>
   );
 }
 

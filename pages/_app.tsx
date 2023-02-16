@@ -55,7 +55,6 @@ const wagmiClient = createClient({
 function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      <title>Celo Academy</title>
       <WagmiConfig client={wagmiClient}>
         <RainbowKitProvider chains={chains} coolMode={true}>
           <UserProvider>

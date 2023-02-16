@@ -3,6 +3,7 @@
 import PathwayCard from "@/components/common/PathwayCard";
 import { pathways } from "@/constants/pathways";
 import { useUser } from "@/context/userContext";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -18,6 +19,14 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <title>Celo Academy</title>
+        <meta
+          name="description"
+          content="Celo Academy is a place to learn Web3 hands-on. Our mission is to empower developers like you with the knowledge and skills necessary to build dApps on multiple frameworks, including Celo, Ethereum, and more."
+          key="desc"
+        />
+      </Head>
       <section>
         <div className="w-full">
           {/* <!-- Hero section --> */}
