@@ -5,8 +5,8 @@ import {
 } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import {
+  ledgerWallet,
   metaMaskWallet,
-  omniWallet,
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import type { AppProps } from "next/app";
@@ -15,7 +15,11 @@ import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import "../styles/globals.css";
 
 // Import known recommended wallets
-import { CeloDance, CeloWallet, Valora } from "@celo/rainbowkit-celo/wallets";
+import {
+  CeloTerminal,
+  CeloWallet,
+  Valora,
+} from "@celo/rainbowkit-celo/wallets";
 
 // Import CELO chain information
 import { UserProvider } from "@/context/userContext";
@@ -34,14 +38,19 @@ const { chains, provider } = configureChains(
 
 const connectors = connectorsForWallets([
   {
-    groupName: "Recommended with CELO",
+    groupName: "Celo Native",
     wallets: [
       Valora({ chains }),
       CeloWallet({ chains }),
-      CeloDance({ chains }),
-      metaMaskWallet({ chains }),
-      omniWallet({ chains }),
+      CeloTerminal({ chains }),
+    ],
+  },
+  {
+    groupName: "Supports Celo",
+    wallets: [
       walletConnectWallet({ chains }),
+      metaMaskWallet({ chains }),
+      ledgerWallet({ chains }),
     ],
   },
 ]);
