@@ -43,9 +43,25 @@ export default function Header() {
                 <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                   <Link
                     href="/pathways"
-                    className="inline-flex items-center border-b-[3px] border-black px-1 pt-1 text-base font-noto text-bold text-black"
+                    className={`inline-flex items-center border-b-[3px] ${
+                      router.pathname.includes("pathway")
+                        ? "border-black"
+                        : "border-white"
+                    } border-black px-1 pt-1 text-base font-noto text-bold text-black`}
                   >
                     Pathways
+                  </Link>
+                </div>
+                <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                  <Link
+                    href="/learn"
+                    className={`inline-flex items-center border-b-[3px] ${
+                      router.pathname.includes("learn")
+                        ? "border-black"
+                        : "border-white"
+                    } border-black px-1 pt-1 text-base font-noto text-bold text-black`}
+                  >
+                    Learn
                   </Link>
                 </div>
               </div>
