@@ -3,6 +3,7 @@
 import PathwayCard from "@/components/common/PathwayCard";
 import { pathways } from "@/constants/pathways";
 import { useUser } from "@/context/userContext";
+import { siteConfig } from "@/site.config";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -20,10 +21,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Celo Academy</title>
+        <title>{siteConfig.siteTitle}</title>
         <meta
           name="description"
-          content="Celo Academy is a place to learn Web3 hands-on. Our mission is to empower developers like you with the knowledge and skills necessary to build dApps on multiple frameworks, including Celo, Ethereum, and more."
+          content={siteConfig.siteDescription}
           key="desc"
         />
       </Head>
@@ -32,18 +33,15 @@ export default function Home() {
           {/* <!-- Hero section --> */}
           <div id="hero" className="w-full">
             <section className="flex flex-row items-center">
-              <div className="w-1/2 mt-12 xl:mt-10 space-y-4 sm:space-y-6 px-6 text-center sm:text-left">
+              <div className="lg:w-1/2 w-full mt-12 xl:mt-10 space-y-4 sm:space-y-6 px-6 text-center sm:text-left">
                 <span className="text-base text-gradient font-semibold uppercase text-black font-noto">
-                  Sign Up Today
+                  {siteConfig.homepage.titleHeader}
                 </span>
-                <h1 className="text-[2.5rem] sm:text-5xl xl:text-7xl font-bold leading-tight capitalize sm:pr-8 xl:pr-10 text-black font-noto">
-                  Celo
-                  <span className="ml-5 text-header-gradient">
-                    Academy
-                  </span>{" "}
+                <h1 className="text-[2.5rem] sm:text-4xl xl:text-6xl font-bold leading-tight capitalize sm:pr-8 xl:pr-10 text-black font-noto">
+                  {siteConfig.homepage.title}
                 </h1>
                 <p className="text-xl hidden sm:block text-black font-noto mt-0">
-                  Empowering Developers for a Decentralized Future.
+                  {siteConfig.homepage.subTitle}
                 </p>
                 <div className="h-10">
                   <button
@@ -56,14 +54,14 @@ export default function Home() {
                       }
                     }}
                   >
-                    Get Started
+                    {siteConfig.homepage.actionButton}
                   </button>
                 </div>
               </div>
-              <div className="hidden sm:block w-1/2">
+              <div className="hidden sm:block lg:w-1/2 w-full">
                 <div className="w-full">
                   <img
-                    src="/website-images/hero-icon.png"
+                    src={siteConfig.homepage.heroImage}
                     className="-mt-4"
                     alt=""
                   />
@@ -88,8 +86,7 @@ export default function Home() {
             </section>
           </div>
 
-          {/* <!-- Advanced trading tools section --> */}
-          <section className="brelative max-w-full sm:mx-4 my-20 py-16 shadow-xl rounded-2xl overflow-hidden">
+          {/* <section className="brelative max-w-full sm:mx-4 my-20 py-16 shadow-xl rounded-2xl overflow-hidden">
             <div className="relative max-w-screen-xl px-4 sm:px-2 mx-auto grid grid-cols-12 gap-x-6">
               <div className="col-span-12 lg:col-span-6">
                 <div className="w-full sm:mt-20 xl:mt-0">
@@ -131,11 +128,11 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
 
           <section>
             {/* Show two cards in one line using grid */}
-            <div className="w-full grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-0 lg:gap-5 px-5 lg:px-0">
+            <div className="lg:mt-0 mt-10 w-full grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-0 lg:gap-5 px-5 lg:px-0">
               {pathways.map((data) => (
                 <PathwayCard key={data.key} data={data} />
               ))}
@@ -144,23 +141,23 @@ export default function Home() {
 
           {/* <!-- Industry-leading security section --> */}
           <section className="w-full my-24">
-            <div className="relative max-w-screen-xl px-8 mx-auto flex flex-row-reverse items-center">
-              <div className="w-1/2 lg:col-span-6">
+            <div className="relative max-w-screen-xl px-8 mx-auto flex flex-wrap flex-row-reverse items-center">
+              <div className="lg:w-1/2 w-full lg:col-span-6">
                 <div className="w-full">
                   <img
-                    src="https://raw.githubusercontent.com/RSurya99/nefa/main/assets/img/industry-leading-security.webp"
+                    src={siteConfig.homepage.featureSection.image}
                     className="w-full"
                     alt=""
                   />
                 </div>
               </div>
-              <div className="w-1/2 lg:col-span-5 space-y-8 sm:space-y-6 mt-8 xl:px-8">
+              <div className="lg:w-1/2 w-full lg:col-span-5 space-y-8 sm:space-y-6 mt-8 xl:px-8">
                 <h2 className="text-4xl font-semibold text-black font-noto">
-                  We offer courses and resources to stay current on web3.
+                  {siteConfig.homepage.featureSection.title}
                 </h2>
                 <ul className="space-y-8 sm:space-y-4 text-lg">
                   <p className="leading-relaxed text-black font-noto">
-                    Join us to be part of the decentralized web movement.
+                    {siteConfig.homepage.featureSection.subTitle}
                   </p>
                 </ul>
               </div>

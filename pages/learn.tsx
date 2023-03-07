@@ -2,16 +2,17 @@
 /* eslint-disable @next/next/no-img-element */
 import LearnCard from "@/components/common/LearnCard";
 import { learn } from "@/constants/learn";
+import { siteConfig } from "@/site.config";
 import Head from "next/head";
 
 export default function Pathways() {
   return (
     <>
       <Head>
-        <title>Celo Academy | Pathways</title>
+        <title>{siteConfig.siteTitle} | Pathways</title>
         <meta
           name="description"
-          content="Celo Academy pathways are a series of lessons that will teach you how to build dApps on Celo."
+          content={siteConfig.sitePathwayDescription}
           key="desc"
         />
       </Head>

@@ -1,5 +1,6 @@
 import { learn } from "@/constants/learn";
 import { useUser } from "@/context/userContext";
+import { siteConfig } from "@/site.config";
 import { getAllLearns, getLearnFromSlug } from "@/utils/mdx";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
@@ -53,7 +54,7 @@ const Articles = ({ learn, allArticles, mdxSource, frontmatter }: Props) => {
     <>
       <Head>
         <title>
-          Celo Academy | {learn.name} | Articles {currentArticles}
+          {siteConfig.siteTitle} | {learn.name} | Articles {currentArticles}
         </title>
       </Head>
       <section>

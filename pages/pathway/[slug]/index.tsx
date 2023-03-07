@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import LessonItem from "@/components/LessonItem";
 import { pathways } from "@/constants/pathways";
+import { siteConfig } from "@/site.config";
 import { getAllPathways } from "@/utils/mdx";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
@@ -45,7 +46,9 @@ function Pathway({ allLessons, pathway }: Props) {
   return (
     <>
       <Head>
-        <title>Celo Academy | {pathway.name}</title>
+        <title>
+          {siteConfig.siteTitle} | {pathway.name}
+        </title>
         <meta name="description" content={pathway.desc} key="desc" />
       </Head>
       <section>
@@ -70,7 +73,7 @@ function Pathway({ allLessons, pathway }: Props) {
                 <Img
                   src={pathway.image}
                   className="rounded-2xl"
-                  alt="Flutter Pathway - Celo Academy"
+                  alt={pathway.name}
                 />
               </div>
             </div>

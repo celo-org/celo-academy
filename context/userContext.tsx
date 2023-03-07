@@ -4,6 +4,7 @@ import { useAccount } from "wagmi";
 type UserProviderProps = {
   user: UserProps | null;
   setUser: () => Promise<void>;
+  userLoading: boolean;
 };
 
 type UserProps = {
@@ -17,6 +18,7 @@ type UserProps = {
 export const UserContext = createContext<UserProviderProps>({
   user: null,
   setUser: async () => {},
+  userLoading: true,
 });
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
@@ -29,6 +31,7 @@ export const useUser = () => useContext<UserProviderProps>(UserContext);
 
 export const useUserData = () => {
   const [user, setUser] = useState<UserProps | null>(null);
+  const [userLoading, setUserLoading] = useState(true);
   const { address, isConnecting, isDisconnected, isConnected } = useAccount();
 
   const fetchUser = async () => {
@@ -41,6 +44,7 @@ export const useUserData = () => {
     });
     const data = await res.json();
     setUser(data["user"]);
+    setUserLoading(false);
   };
 
   useEffect(() => {
@@ -50,5 +54,5 @@ export const useUserData = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected]);
 
-  return { user, setUser: fetchUser };
+  return { user, setUser: fetchUser, userLoading };
 };

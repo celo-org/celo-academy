@@ -3,7 +3,7 @@ title: Getting Started with Flutter and Celo
 description: Learn how to build a Flutter app that interacts with the Celo blockchain
 lesson: "1"
 restriction: "QuizDialog"
-question: "What is the name of the CLI tool that makes it easy to bootstrap a Celo-based web3 project?"
+question: "What is the name of the CLI tool that makes it easy to bootstrap a web3 project?"
 option1: "Celo Composer"
 option2: "Celo Starter"
 option3: "Celo CLI"
@@ -14,29 +14,54 @@ publishedAt: '2023-02-01'
 
 ## Getting Started
 
-I assume that anyone going through this tutorial already understands and uses Flutter, so I will skip the setup involved in getting Flutter to work on your development computer. That means I assume you already have VS Code/Android Studio together with Android SDK and Flutter setup on your PC.
+In this lesson, we will learn how to install Celo Composer and use it to generate a Flutter project that integrates with the Celo blockchain. Celo Composer is a command-line tool that provides a framework for building decentralized applications (dApps) on the Celo blockchain. It offers a streamlined development experience that includes web3 and walletconnect integration, enabling you to connect your dApp to the blockchain and create secure and fast crypto payments.
 
-\*If you are entirely new to Flutter, here [https://docs.flutter.dev/get-started/install](https://docs.flutter.dev/get-started/install) is a good tutorial you can learn from.
-
-To get started, you can clone this repository flutter-web3-celo or make use of Celo Composer.
-
-Celo Composer is a set of tools and starter templates that makes it easy for you to start your Celo-based web3 projects.
-
-You can check out Celo Composer here [https://github.com/celo-org/celo-composer/tree/main/packages/flutter-app](https://github.com/celo-org/celo-composer/tree/main/packages/flutter-app).
 
 ### Using Celo Composer
 
-To start our Flutter App Project, we will use the Celo Composer CLI; the CLI makes it easy for us to select the options that we want when bootstrapping our dApp. In other to do that you need to have Node set up on your PC and you can visit Node to get started. Run this on your terminal after setup Node.
+We will use Celo Composer to generate a new Flutter project that integrates with blockchain. To create a new project, open your terminal and run the following command:
 
 ```bash
 npx @celo/celo-composer create
 ```
 
-Choose Flutter when asked for the framework
+Celo Composer will prompt you to choose a framework from the available options. Choose "Flutter" and follow the on-screen prompts to create a new Flutter project that integrates with the Celo blockchain.
 
-Choose hardhat (Only Hardhat is available at the time of writing this tutorial)
+Example output - 
 
-Your Project will now be created; you can check to make sure it has the following folders
+```text
 
-packages/hardhat - Your Hardhat Folder - Where you can keep your Contracts
-packages/flutter-app - Your Flutter project
+Celo Composer CLI
+? Choose front-end framework: Flutter
+? Choose smart-contract framework: None
+? Create a subgraph: No
+? Project name:  flutter-demo
+```
+
+To learn more about Celo Composer follow the documentation - [https://github.com/celo-org/celo-composer/](https://github.com/celo-org/celo-composer/) and Flutter documentation - [https://github.com/celo-org/celo-composer/blob/main/packages/flutter-app/README.md](https://github.com/celo-org/celo-composer/blob/main/packages/flutter-app/README.md)
+
+Once the project is created, you'll have a new directory with your project name and a Flutter project structure within it.
+
+The generated Flutter project structure will look like this:
+
+```text
+├──pacakges
+  └──flutter-app
+      └──.vscode
+      └──android
+      └──ios
+      └──lib
+      └──.gitignore
+      └──pubspec.yaml
+```
+
+Let's take a closer look at each of these folders:
+
+- android: This folder contains all the Android-specific code.
+- ios: This folder contains all the IOS-specific code.
+- lib: This folder contains core modules, controllers, UI code, constants, and more.
+- .gitignore: This file specifies intentionally untracked files that Git should ignore.
+- pubspec.yaml: This file is generated when you create a new Flutter project and contains dependencies and other project metadata.
+
+That's it! You now have a new Flutter project that integrates with the Celo blockchain. In the next lesson, we will explore the different packages that we will be using in our project.
+

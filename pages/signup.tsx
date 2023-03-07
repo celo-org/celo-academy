@@ -3,6 +3,7 @@
 import InputField from "@/components/common/input";
 import Loading from "@/components/common/Loading";
 import { useUser } from "@/context/userContext";
+import { siteConfig } from "@/site.config";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -79,10 +80,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Celo Academy | Signup</title>
+        <title>{siteConfig.siteTitle} | Signup</title>
         <meta
           name="description"
-          content="Celo Academy signup page"
+          content={siteConfig.siteTitle + " | Signup Page"}
           key="desc"
         />
       </Head>

@@ -7,6 +7,7 @@ import QuizDialog from "@/components/quizDialog";
 import YesDialog from "@/components/yesDialog";
 import { pathways } from "@/constants/pathways";
 import { useUser } from "@/context/userContext";
+import { siteConfig } from "@/site.config";
 import { getAllPathways, getPathwayFromSlug } from "@/utils/mdx";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
@@ -34,7 +35,9 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
   const [loading, setLoading] = useState(false);
   const [completedPercentage, setCompletedPercentage] = useState(0);
   const [fetching, setFetching] = useState(true);
-  const { user } = useUser();
+  const { user, userLoading } = useUser();
+
+  const { isConnected } = useAccount();
 
   const [hasMounted, setHasMounted] = useState(false);
   useEffect(() => {
@@ -42,10 +45,13 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
   }, []);
 
   useEffect(() => {
-    if (user == null || !user.name) {
-      router.push("/signup");
+    if (!userLoading) {
+      if (user == null || !user.name) {
+        console.log("HERE");
+        router.push("/signup");
+      }
     }
-  }, [router, user]);
+  }, [router, user, userLoading]);
 
   useEffect(() => {
     if (hasMounted) highlight(); // <--- call the async function
@@ -137,7 +143,7 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
     <>
       <Head>
         <title>
-          Celo Academy | {pathway.name} | Lesson {currentLesson}
+          {siteConfig.siteTitle} | {pathway?.name} | Lesson {currentLesson}
         </title>
       </Head>
       <section>
@@ -274,11 +280,9 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   var paths: { params: { slug: string; lesson: string } }[] = [];
-  // Get the paths we want to pre-render based on users
   await Promise.all(
     pathways.map(async (pathway) => {
       const articles = await getAllPathways(pathway.key);
-      // sort the articles by lesson, convert the lesson to number first
       articles.sort((a, b) => {
         return Number(a.lesson) - Number(b.lesson);
       });
@@ -296,7 +300,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const slug = params?.slug as string;
     const lesson = params?.lesson as string;
     const allLessons = await getAllPathways(slug);
-
     let { content, frontmatter } = await getPathwayFromSlug(slug, lesson);
     const mdxSource = await serialize(content, {
       mdxOptions: {

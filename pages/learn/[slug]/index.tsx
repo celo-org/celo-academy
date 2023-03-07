@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import LearnLessonItem from "@/components/LearnLessonItem";
 import { learn } from "@/constants/learn";
+import { siteConfig } from "@/site.config";
 import { getAllLearns } from "@/utils/mdx";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
@@ -16,7 +17,9 @@ function Learn({ allLessons, learn }: Props) {
   return (
     <>
       <Head>
-        <title>Celo Academy | {learn.name ?? "Learn"}</title>
+        <title>
+          {siteConfig.siteTitle} | {learn.name ?? "Learn"}
+        </title>
         <meta name="description" content={learn.desc} key="desc" />
       </Head>
       <section>
@@ -41,7 +44,7 @@ function Learn({ allLessons, learn }: Props) {
                 <Img
                   src={learn.image}
                   className="rounded-2xl"
-                  alt="Flutter Learn - Celo Academy"
+                  alt={learn.name}
                 />
               </div>
             </div>

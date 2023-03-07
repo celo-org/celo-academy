@@ -21,11 +21,7 @@ function LearnCard({ data }: Props) {
       className="border-2 border-black rounded-2xl bg-gypsum w-full  mt-5"
     >
       <Link href={data.url}>
-        <Img
-          src={data.image}
-          className="rounded-t-2xl"
-          alt="Flutter Learn - Celo Academy"
-        />
+        <Img src={data.image} className="rounded-t-2xl" alt={data.name} />
       </Link>
       <div className="py-5 px-6">
         <h3 className="text-black font-noto text-3xl md:text-4xl">
