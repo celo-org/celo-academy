@@ -24,6 +24,7 @@ import {
 
 // Import CELO chain information
 import { UserProvider } from "@/context/userContext";
+import useAnalytics from "@/hooks/useAnalytics";
 import { components } from "@/utils/mdx";
 import { Alfajores, Celo } from "@celo/rainbowkit-celo/chains";
 import Layout from "../components/Layout";
@@ -63,6 +64,7 @@ const wagmiClient = createClient({
 });
 
 function App({ Component, pageProps }: AppProps) {
+  useAnalytics();
   return (
     <>
       <NextNProgress

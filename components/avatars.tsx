@@ -40,7 +40,7 @@ const Avatars: React.FC<Props> = ({
           <img className="w-7 h-7 rounded-full" src={dataUri2} alt="avatar" />
         </div>
         <span className="text-black font-noto">
-          {totalCompletes} {totalCompletes == 1 ? "person" : "people"} completed
+          {totalCompletes} {totalCompletes <= 1 ? "person" : "people"} completed
         </span>
       </div>
     );
@@ -56,7 +56,7 @@ const Avatars: React.FC<Props> = ({
           className="group-hover:opacity-100 transition-opacity bg-gray-200 px-1 text-xs text-black rounded-md absolute left-1/2 
       -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto text-center"
         >
-          {totalCompletes} {totalCompletes == 1 ? "person" : "people"} completed
+          {totalCompletes} {totalCompletes <= 1 ? "person" : "people"} completed
         </span>
       )}
     </div>

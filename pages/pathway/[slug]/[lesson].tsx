@@ -51,7 +51,6 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
   useEffect(() => {
     if (!userLoading) {
       if (user == null || !user.name) {
-        console.log("HERE");
         router.push("/signup");
       }
     }
@@ -234,7 +233,7 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
           <div className="w-3/4 px-8 markdown-content">
             {stats && (
               <Avatars
-                totalCompletes={stats[lessonNumber]}
+                totalCompletes={stats[lessonNumber] ?? 0}
                 showToolTip={false}
               />
             )}

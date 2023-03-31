@@ -18,7 +18,6 @@ function QuizDialog({
   hasCompleted,
   loading,
 }: Props) {
-  console.log("hasCompleted", hasCompleted);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [error, setError] = useState("");
 
