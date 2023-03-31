@@ -19,7 +19,7 @@ export default function Pathways() {
       <section>
         <div className="w-full">
           <section>
-            <div className="w-full grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-0 lg:gap-5 px-5 lg:px-0">
+            <div className="w-full px-5 lg:px-0">
               {pathways.map((data) => (
                 <PathwayCard key={data.key} data={data} />
               ))}

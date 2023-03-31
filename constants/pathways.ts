@@ -8,6 +8,15 @@ export const pathways = [
     image: FlutterPathway,
     desc: "Flutter Pathway for Web3 is a framework for developing decentralized applications (dApps) on the web using the Flutter UI toolkit. It provides a seamless integration of the latest Web3 technologies with the rich, expressive, and performant user interface capabilities of Flutter.",
     tags: ["flutter", "celo", "web3"],
+    skills: [
+      "Flutter Fundamentals",
+      "Smart Contract Developement",
+      "Master Solidity",
+      "Hardhat Basics",
+    ],
+    timeToComplete: "2 weeks",
+    preRequisites: "None 🔥",
+    skillLevel: "Beginner",
   },
   // {
   //   key: "react-pathway",

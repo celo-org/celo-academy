@@ -1,4 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
+import Avatars from "./avatars";
 
 type Props = {
   lesson: {
@@ -11,6 +13,7 @@ type Props = {
   lessonNumber: string;
   slug: string;
   lastCompletedLesson: string;
+  totalCompletes: number;
 };
 
 function LessonItem({
@@ -18,18 +21,20 @@ function LessonItem({
   slug,
   lastCompletedLesson,
   lessonNumber,
+  totalCompletes,
 }: Props) {
   const isLocked =
     lessonNumber != "0" &&
     Number(lessonNumber) > Number(lastCompletedLesson) + 1;
+
   return (
     <div
       key={lesson.slug}
-      className={`py-6 px-8 hover:bg-gypsum hover:cursor-pointer rounded-xl mb-1 bg-light`}
+      className={`py-6 px-8 hover:bg-gypsum rounded-xl mb-1 bg-light flex flex-row flex-nowrap justify-between items-center`}
     >
       <Link
         href={isLocked ? "#" : `/pathway/${slug}/lesson-${lesson.lesson}`}
-        className="text-decoration-none"
+        className="text-decoration-none hover:cursor-pointer"
       >
         <div className="font-noto text-black">
           <div className="flex flex-row flex-nowrap items-center">
@@ -43,6 +48,9 @@ function LessonItem({
           </div>
         </div>
       </Link>
+      <div>
+        {totalCompletes > 0 && <Avatars totalCompletes={totalCompletes} />}
+      </div>
     </div>
   );
 }

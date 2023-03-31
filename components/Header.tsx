@@ -54,7 +54,7 @@ export default function Header() {
                       Pathways
                     </Link>
                   </div>
-                  {siteConfig.showLearnSection && (
+                  {/* {siteConfig.showLearnSection && (
                     <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                       <Link
                         href="/learn"
@@ -67,7 +67,7 @@ export default function Header() {
                         Learn
                       </Link>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
               <div className="flex absolute lg:inset-y-0 inset-y-24 right-0  items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 flex-row ">

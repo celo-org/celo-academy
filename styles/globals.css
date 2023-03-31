@@ -268,3 +268,46 @@ pre[class*='language-'] {
   margin: 4px 3px;
   box-shadow: none !important;
 }
+
+
+.front {
+  will-change: transform ;
+  transition: transform 600ms cubic-bezier(.3, .7, .4, 1);;
+  transform: translateY(-4px) translateX(-4px);
+}
+
+
+.pushable:hover .front {
+  transform: translateY(-5px) translateX(-5px);
+  transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
+}
+
+.pushable:active .front {
+  transform: translateY(-1px) translateX(-1px);
+  transition: transform 34ms;
+}
+
+.pushable:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.front-card {
+  will-change: transform ;
+  transition: transform 600ms cubic-bezier(.3, .7, .4, 1);;
+  transform: translateY(-1px) translateX(-1px);
+}
+
+
+.pushable-card:hover .front-card {
+  transform: translateY(-5px) translateX(-5px);
+  transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
+}
+
+.pushable-card:active .front-card {
+  transform: translateY(-1px) translateX(-1px);
+  transition: transform 34ms;
+}
+
+.pushable-card:focus:not(:focus-visible) {
+  outline: none;
+}

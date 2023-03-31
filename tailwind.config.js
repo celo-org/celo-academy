@@ -32,6 +32,7 @@ module.exports = {
       textColor: "#FFFFFF",
       fontFamily: {
         noto: ["Futura", "sans-serif"],
+        code: ["Roboto Mono", "monospace"],
       },
     },
   },

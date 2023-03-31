@@ -10,6 +10,7 @@ import {
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import type { AppProps } from "next/app";
+import NextNProgress from "nextjs-progressbar";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import "../styles/globals.css";
@@ -64,6 +65,14 @@ const wagmiClient = createClient({
 function App({ Component, pageProps }: AppProps) {
   return (
     <>
+      <NextNProgress
+        color="#000"
+        startPosition={0.3}
+        stopDelayMs={200}
+        height={3}
+        showOnShallow={true}
+      />
+
       <WagmiConfig client={wagmiClient}>
         <RainbowKitProvider chains={chains} coolMode={true}>
           <UserProvider>

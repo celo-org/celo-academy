@@ -10,46 +10,75 @@ type Props = {
     image: StaticImageData;
     desc: string;
     tags: string[];
+    skills: string[];
+    preRequisites: string;
+    skillLevel: string;
+    timeToComplete: string;
   };
 };
 
 function PathwayCard({ data }: Props) {
   const router = useRouter();
   return (
-    <div
-      key={data.key}
-      className="border-2 border-black rounded-2xl bg-gypsum w-full  mt-5"
-    >
-      <Link href={data.url}>
-        <Img src={data.image} className="rounded-t-2xl" alt={data.name} />
-      </Link>
-      <div className="py-5 px-6">
-        <h3 className="text-black font-noto text-3xl md:text-4xl">
-          {data.name}
-        </h3>
-        <p className="text-black font-noto text-sm md:text-base mt-5">
-          {data.desc}
-        </p>
-      </div>
-      <div className="px-6 flex flex-row flex-wrap">
-        {data.tags.map((tag) => (
-          <div key={tag} className="p-1 text-black rounded-full text-lg">
-            #{tag}
+    <Link href={data.url}>
+      <div
+        key={data.key}
+        className="border-2 border-black rounded-2xl w-full mt-5   pushable select-none bg-black border-none p-0 cursor-pointer outline-offset-4"
+      >
+        <div className="front w-full rounded-2xl border-2 border-black flex flex-row justify-between py-2 px-6 bg-gypsum">
+          <div className="w-3/5">
+            <div className="py-5 px-6">
+              <p className="font-code font-bold mt-2 mb-4">
+                [ learn flutter fundamentals ]
+              </p>
+              <h3 className="text-black font-noto text-3xl md:text-4xl">
+                {data.name}
+              </h3>
+              <p className="text-black font-noto text-sm md:text-base mt-5">
+                {data.desc}
+              </p>
+              <p className="font-noto font-semibold mt-8 mb-2">
+                SKILLS YOU&apos;LL LEARN
+              </p>
+              <div className="inline-flex flex-row flex-wrap">
+                {data.skills.map((skill) => (
+                  <div
+                    key={skill}
+                    className="px-2 py-1 border-2 border-black rounded-lg font-noto text-sm font-semibold whitespace-nowrap mt-2 mr-2"
+                  >
+                    {skill}
+                  </div>
+                ))}
+              </div>
+              <div className="w-full flex flex-row font-semibold mt-8 mb-2 font-noto ">
+                <div className="w-1/3 flex flex-col justify-start">
+                  <span>{data.preRequisites}</span>
+                  <span className="font-code text-sm mt-1">pre-requisites</span>
+                </div>
+                <div className="w-1/3 flex flex-col justify-start">
+                  <span>{data.skillLevel}</span>
+                  <span className="font-code text-sm mt-1">kills</span>
+                </div>
+                <div className="w-1/3 flex flex-col justify-start">
+                  <span>{data.timeToComplete}</span>
+                  <span className="font-code text-sm mt-1">
+                    time to complete
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
-      <div className="px-6 pb-6 h-20 mt-3">
-        <div
-          onClick={(e) => {
-            e.preventDefault();
-            router.push(data.url);
-          }}
-          className="w-full button-full hover:cursor-pointer"
-        >
-          Start the Pathway
+          <div className="w-2/5 flex justify-end items-start">
+            <Img
+              src={data.image}
+              className="rounded-2xl m-3"
+              alt={data.name}
+              width={400}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

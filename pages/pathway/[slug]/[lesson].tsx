@@ -1,4 +1,5 @@
 import AddressDialog from "@/components/addressDialog";
+import Avatars from "@/components/avatars";
 import Loading from "@/components/common/Loading";
 import CompletionDialog from "@/components/CompletionDialog";
 import ImageDialog from "@/components/imageDialog";
@@ -31,12 +32,15 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
   const router = useRouter();
   const currentLesson = (router.query.lesson as string).split("-")[1];
   const slug = router.query.slug as string;
+  const lesson = router.query.lesson as string;
   const [pathwayFBData, setPathwayFBData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [completedPercentage, setCompletedPercentage] = useState(0);
   const [fetching, setFetching] = useState(true);
   const { user, userLoading } = useUser();
+  const [stats, setStats] = useState<any>(null);
 
+  const lessonNumber = (router.query.lesson as string).split("-")[1];
   const { isConnected } = useAccount();
 
   const [hasMounted, setHasMounted] = useState(false);
@@ -62,48 +66,62 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
   };
 
   const onSuccessfulCompletion = async () => {
-    setLoading(true);
-    try {
-      var res = await fetch("/api/lesson-completed", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          address: address,
-          pathway: slug,
-          lessonCompleted: currentLesson,
-        }),
-      });
-      var decodedRes = await res.json();
-      if (decodedRes["success"] == true) {
-        router.push(`/pathway/${slug}/lesson-${Number(currentLesson) + 1}`);
+    if (
+      pathwayFBData &&
+      currentLesson <= (pathwayFBData.lastCompletedLesson ?? 0)
+    ) {
+      router.push(`/pathway/${slug}/lesson-${Number(currentLesson) + 1}`);
+    } else {
+      setLoading(true);
+      try {
+        var res = await fetch("/api/lesson-completed", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            address: address,
+            pathway: slug,
+            lessonCompleted: currentLesson,
+          }),
+        });
+        var decodedRes = await res.json();
+        if (decodedRes["success"] == true) {
+          router.push(`/pathway/${slug}/lesson-${Number(currentLesson) + 1}`);
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
     }
   };
 
   const onPathwayCompletetion = async () => {
     setLoading(true);
-    try {
-      var res = await fetch("/api/pathway-completed", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          address: address,
-          pathway: slug,
-          lessonCompleted: currentLesson,
-        }),
-      });
-      var decodedRes = await res.json();
-      if (decodedRes["success"] == true) {
-        router.push(`/pathways`);
+    if (
+      pathwayFBData &&
+      currentLesson <= (pathwayFBData.lastCompletedLesson ?? 0)
+    ) {
+      router.push(`/pathways`);
+    } else {
+      try {
+        var res = await fetch("/api/pathway-completed", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            address: address,
+            pathway: slug,
+            lessonCompleted: currentLesson,
+          }),
+        });
+        var decodedRes = await res.json();
+        if (decodedRes["success"] == true) {
+          router.push(`/pathways`);
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -121,6 +139,21 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
         }),
       });
       res = await res.json();
+
+      var statsRes = await fetch("/api/get-lesson-stats", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          totalLessons: allLessons.length,
+          pathway: slug,
+        }),
+      });
+      var statsData = await statsRes.json();
+
+      setStats(statsData["resData"]);
+
       getCompletedLessonPercentage(res);
       setPathwayFBData(res);
       setFetching(false);
@@ -179,7 +212,6 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
       <section className="mt-4">
         <div className="flex flex-row flex-wrap md:flex-nowrap">
           <div className="w-1/4">
-            {}
             <div className="mt-3">
               {allLessons.map((lesson) => {
                 return (
@@ -200,6 +232,12 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
             </div>
           </div>
           <div className="w-3/4 px-8 markdown-content">
+            {stats && (
+              <Avatars
+                totalCompletes={stats[lessonNumber]}
+                showToolTip={false}
+              />
+            )}
             {hasMounted && mdxSource && <MDXRemote {...mdxSource} />}
             {frontmatter.restriction == "YesDialog" && (
               <YesDialog
