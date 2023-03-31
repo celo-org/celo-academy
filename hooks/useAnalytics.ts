@@ -27,14 +27,21 @@ const useTimeSpent = () => {
   };
 
   const storeData = (data: AnalyticsData) => {
-    if (data.path == "/pathway/[slug]/[lesson]") {
+    if (data.asPath.includes("/pathway/")) {
       const pathway = data.asPath.split("/")[4];
       const lesson = data.asPath.split("/")[5];
+      if (lesson === undefined) return;
 
       // check if timespent is more than 30 min then only snd timespent as 30 min
       if (data.timeSpent > 1800000) {
         data.timeSpent = 1800000;
       }
+      console.log("analytics", {
+        address: address,
+        pathway: pathway,
+        lesson: lesson,
+        timeSpent: data.timeSpent,
+      });
       fetch("/api/update-analytics", {
         method: "POST",
         headers: {
