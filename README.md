@@ -7,16 +7,14 @@ This is a Learning Management System (LMS) built using Next.js. It allows users 
 ### Prerequisites
 
 - Node.js version 14 or later installed on your machine
-- A Firebase account with a new or existing project
-- Firebase Firestore enabled in your project
 
 ### Installation
 
 - Clone the repository and navigate to the project directory
 
 ```bash
-git clone https://github.com/your-username/nextjs-lms.git
-cd nextjs-lms
+git clone https://github.com/celo-org/celo-academy
+cd celo-academy
 ```
 
 - Install the project dependencies by running:
@@ -25,7 +23,11 @@ cd nextjs-lms
 yarn
 ```
 
-### Firebase Configuration
+### Local Mode
+
+When running the application in local mode (ENV=local), the site will not use Firebase and will not track any data or allow user sign-ups. This mode is specifically designed for contributors who are writing pathways and want to test their content locally without needing to set up a full Firebase integration.
+
+### Firebase Configuration (Optional)
 
 1. Create a new Firebase project or use an existing one and go to the project's dashboard.
 2. Navigate to the Firestore section and click on Create database.
@@ -39,6 +41,7 @@ yarn
 2. Open the `.env` file in your text editor and fill in the necessary information with your Firebase project's configuration values:
 
 ```text
+ENV="local"
 FIREBASE_API_KEY=your_api_key
 FIREBASE_AUTH_DOMAIN=your_auth_domain
 FIREBASE_PROJECT_ID=your_project_id
@@ -47,6 +50,8 @@ FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 FIREBASE_APP_ID=your_app_id
 FIREBASE_MEASUREMENT_ID=your_measurement_id
 ```
+
+> When ENV is set to local, there's no need to set up Firebase, and the application will run without tracking anything or allowing user sign-ups. This mode is intended for contributors who are writing pathways and want to test locally.
 
 ### Run the Application
 
