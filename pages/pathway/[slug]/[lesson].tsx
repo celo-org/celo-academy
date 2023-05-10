@@ -169,6 +169,10 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
   }, [address, allLessons.length, currentLesson, slug]);
 
   const getCompletedLessonPercentage = (data: any) => {
+    if (data == null || data.lastCompletedLesson == null) {
+      setCompletedPercentage(0);
+      return;
+    }
     const totalLessons = allLessons.length;
     const lastCompletedLesson = Number(data.lastCompletedLesson) + 1;
     const percentage = (lastCompletedLesson / totalLessons) * 100;

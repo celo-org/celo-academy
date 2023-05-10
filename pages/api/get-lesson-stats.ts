@@ -4,6 +4,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   var resData = {};
+  if (process.env.ENV === "local") {
+    res.status(200).json({ success: true, resData: { "0": 0 } });
+    return;
+  }
   for (var i = 0; i < req.body.totalLessons; i++) {
     var lessonData = await getDoc(
       doc(database, "pathways", req.body.pathway, "lessons", i.toString())

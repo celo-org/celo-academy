@@ -3,6 +3,10 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (process.env.ENV === "local") {
+    res.status(200).json({ success: true });
+    return;
+  }
   var userDoc = await getDoc(
     doc(database, "users", req.body.address, "pathways", req.body.pathway)
   );
@@ -22,9 +26,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     );
   }
-  // await updateDoc(doc(database, "users", req.body.address), {
-  //   completedPathways: arrayUnion(req.body.pathway),
-  // });
   const lesson = req.body.lesson.split("-")[1];
   var pathwayDoc = await getDoc(
     doc(database, "pathways", req.body.pathway, "lessons", lesson)

@@ -34,11 +34,13 @@ function LessonItem({
     >
       <Link
         href={isLocked ? "#" : `/pathway/${slug}/lesson-${lesson.lesson}`}
-        className="text-decoration-none hover:cursor-pointer"
+        className="text-decoration-none hover:cursor-pointer w-full"
       >
-        <div className="flex flex-row flex-nowrap items-center font-noto text-black">
-          <div className="w-1/6">{isLocked ? <LockIcon /> : <StartIcon />}</div>
-          <div className="flex flex-col w-5/6">
+        <div className="flex flex-row flex-nowrap items-center font-noto text-black w-full">
+          <div className="w-1/6 md:w-1/12">
+            {isLocked ? <LockIcon /> : <StartIcon />}
+          </div>
+          <div className="flex flex-col w-5/6 md:w-11/12 pr-5">
             <p className="font-bold text-lg pb-0 mb-0">
               Lesson {lesson.lesson} - {lesson.title}
             </p>
@@ -49,7 +51,8 @@ function LessonItem({
       <div className="flex flex-row items-center justify-center">
         {totalCompletes > 0 && <Avatars totalCompletes={totalCompletes} />}
         <span className="text-black font-noto">
-          {totalCompletes} {totalCompletes <= 1 ? "person" : "people"} completed
+          {totalCompletes ?? 0} {totalCompletes <= 1 ? "person" : "people"}{" "}
+          completed
         </span>
       </div>
     </div>

@@ -11,6 +11,10 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (process.env.ENV === "local") {
+    res.status(200).json({ success: true });
+    return;
+  }
   await setDoc(
     doc(database, "users", req.body.address, "pathways", req.body.pathway),
     {
