@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import LessonItem from "@/components/LessonItem";
-import Loading from "@/components/common/Loading";
+import PathwayStructureShimmer from "@/components/shimmers/PathwayStructureShimmer";
 import { pathways } from "@/constants/pathways";
 import { siteConfig } from "@/site.config";
 import { getAllPathways } from "@/utils/mdx";
@@ -72,63 +72,92 @@ function Pathway({ allLessons, pathway }: Props) {
         </title>
         <meta name="description" content={pathway?.desc ?? ""} key="desc" />
       </Head>
-      <section>
-        <div className="w-full">
-          <section>
-            <div className="rounded-3xl p-10 font-noto bg-gypsum flex flex-row flex-nowrap items-center">
-              <div className="flex flex-col w-2/3 pr-8">
-                <h1 className="text-3xl font-bold">{pathway?.name ?? ""}</h1>
-                <h4 className="text-base mt-2">{pathway?.desc ?? ""}</h4>
-                <div className="h-16 mt-5">
-                  <button
-                    className="button"
-                    onClick={() => {
-                      router.push(`/pathway/${slug}/lesson-0`);
-                    }}
+      <div>
+        <section>
+          <div className="rounded-2xl border-2 border-black flex flex-col-reverse md:flex-row justify-between py-3 md:px-6 px-3 bg-gypsum mx-3 md:mx-0">
+            <div className="md:w-3/5 w-full md:py-5 py-4 md:px-6 px-3">
+              <p className="font-code font-bold mt-2 mb-4">
+                [ {pathway.tagLine} ]
+              </p>
+              <h3 className="text-black font-noto text-3xl md:text-4xl">
+                {pathway.name}
+              </h3>
+              <p className="text-black font-noto text-sm md:text-base mt-5">
+                {pathway.desc}
+              </p>
+              <p className="font-noto font-semibold mt-8 mb-2">
+                SKILLS YOU&apos;LL LEARN
+              </p>
+              <div className="inline-flex flex-row flex-wrap">
+                {pathway.skills.map((skill) => (
+                  <div
+                    key={skill}
+                    className="px-2 py-1 border-2 border-black rounded-lg font-noto text-sm font-semibold whitespace-nowrap mt-2 mr-2"
                   >
-                    Start Pathway
-                  </button>
+                    {skill}
+                  </div>
+                ))}
+              </div>
+              <div className="w-full flex flex-row font-semibold mt-8 mb-2 font-noto ">
+                <div className="w-1/3 flex flex-col justify-start">
+                  <span>{pathway.preRequisites}</span>
+                  <span className="font-code text-sm mt-1">pre-requisites</span>
+                </div>
+                <div className="w-1/3 flex flex-col justify-start">
+                  <span>{pathway.skillLevel}</span>
+                  <span className="font-code text-sm mt-1">kills</span>
+                </div>
+                <div className="w-1/3 flex flex-col justify-start">
+                  <span>{pathway.timeToComplete}</span>
+                  <span className="font-code text-sm mt-1">
+                    time to complete
+                  </span>
                 </div>
               </div>
-              <div className="flex flex-col w-1/3">
-                <Img
-                  src={pathway.image}
-                  className="rounded-2xl"
-                  alt={pathway.name}
-                />
-              </div>
             </div>
-          </section>
-          <section className="mt-10">
-            {loading && <Loading />}
-            {pathwayFBData && (
-              <h1 className="text-3xl font-noto mb-8">Pathway Structure</h1>
-            )}
-            {!userAddress && (
-              <div className="font-noto">
-                Connect your wallet to see the lessons
-              </div>
-            )}
-            {pathwayFBData &&
-              allLessons.map((lesson) => {
-                return (
-                  <LessonItem
-                    key={lesson.slug}
-                    lesson={lesson}
-                    lessonNumber={lesson.lesson}
-                    slug={slug}
-                    lastCompletedLesson={
-                      pathwayFBData && pathwayFBData.lastCompletedLesson
-                        ? pathwayFBData.lastCompletedLesson
-                        : "0"
-                    }
-                    totalCompletes={stats[lesson.lesson]}
-                  />
-                );
-              })}
-          </section>
-        </div>
-      </section>
+
+            <div className="w-full md:w-2/5 flex justify-end items-start">
+              <Img
+                src={pathway.image}
+                className="rounded-2xl m-0 md:m-3"
+                alt={pathway.name}
+                width={400}
+              />
+            </div>
+          </div>
+        </section>
+        <section className="mt-10">
+          {loading && <PathwayStructureShimmer />}
+          {!loading && pathwayFBData && (
+            <h1 className="text-3xl font-noto md:mb-8 mb-4 ml-4 md:ml-0">
+              Pathway Structure
+            </h1>
+          )}
+          {!userAddress && (
+            <div className="font-noto text-center">
+              Connect your wallet to see the lessons
+            </div>
+          )}
+          {!loading &&
+            pathwayFBData &&
+            allLessons.map((lesson) => {
+              return (
+                <LessonItem
+                  key={lesson.slug}
+                  lesson={lesson}
+                  lessonNumber={lesson.lesson}
+                  slug={slug}
+                  lastCompletedLesson={
+                    pathwayFBData && pathwayFBData.lastCompletedLesson
+                      ? pathwayFBData.lastCompletedLesson
+                      : "0"
+                  }
+                  totalCompletes={stats[lesson.lesson]}
+                />
+              );
+            })}
+        </section>
+      </div>
     </>
   );
 }
@@ -172,12 +201,16 @@ export default Pathway;
 
 type Props = {
   pathway: {
-    key: string;
     name: string;
     url: string;
     image: StaticImageData;
     desc: string;
     tags: string[];
+    skills: string[];
+    preRequisites: string;
+    skillLevel: string;
+    timeToComplete: string;
+    tagLine: string;
   };
   allLessons: {
     slug: string;

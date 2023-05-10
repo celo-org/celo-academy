@@ -1,15 +1,17 @@
-import AddressDialog from "@/components/addressDialog";
+import LessonSidebarItem from "@/components/LessonSidebarItem";
 import Avatars from "@/components/avatars";
 import Loading from "@/components/common/Loading";
-import CompletionDialog from "@/components/CompletionDialog";
-import ImageDialog from "@/components/imageDialog";
-import LessonSidebarItem from "@/components/LessonSidebarItem";
-import QuizDialog from "@/components/quizDialog";
-import YesDialog from "@/components/yesDialog";
+import CompletionDialog from "@/components/dialog/CompletionDialog";
+import AddressDialog from "@/components/dialog/addressDialog";
+import ImageDialog from "@/components/dialog/imageDialog";
+import QuizDialog from "@/components/dialog/quizDialog";
+import YesDialog from "@/components/dialog/yesDialog";
 import { pathways } from "@/constants/pathways";
 import { useUser } from "@/context/userContext";
+import useIsMobile from "@/hooks/useIsMobile";
 import { siteConfig } from "@/site.config";
 import { getAllPathways, getPathwayFromSlug } from "@/utils/mdx";
+import { XCircleIcon } from "@heroicons/react/24/solid";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import { serialize } from "next-mdx-remote/serialize";
@@ -41,7 +43,12 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
   const [stats, setStats] = useState<any>(null);
 
   const lessonNumber = (router.query.lesson as string).split("-")[1];
-  const { isConnected } = useAccount();
+  const [lessonsMenuOpen, setLessonsMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
+
+  const toggleLessonsMenu = () => {
+    setLessonsMenuOpen(!lessonsMenuOpen);
+  };
 
   const [hasMounted, setHasMounted] = useState(false);
   useEffect(() => {
@@ -158,7 +165,8 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
       setFetching(false);
     };
     pathwayApiCall();
-  }, [address, currentLesson, slug]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, allLessons.length, currentLesson, slug]);
 
   const getCompletedLessonPercentage = (data: any) => {
     const totalLessons = allLessons.length;
@@ -173,27 +181,63 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
 
   return (
     <>
+      {isMobile && (
+        <div
+          id="menu"
+          className={`fixed z-50 flex flex-col justify-start items-start bg-white duration-100 py-5 mx-5 border-2 border-black rounded-xl ${
+            lessonsMenuOpen
+              ? "w-[350px] h-[500px] opacity-100"
+              : "w-0 h-0 opacity-0"
+          }`}
+        >
+          <XCircleIcon
+            className="w-8 h-8 ml-4"
+            stroke="white"
+            onClick={() => {
+              toggleLessonsMenu();
+            }}
+          />
+          <div className="flex flex-col text-black text-center text-xl font-light space-y-3 mt-4 w-full h-[450px] overflow-auto">
+            {allLessons.map((lesson) => {
+              return (
+                <LessonSidebarItem
+                  key={lesson.slug}
+                  lesson={lesson}
+                  currentLesson={currentLesson}
+                  lessonNumber={lesson.lesson}
+                  slug={slug}
+                  lastCompletedLesson={
+                    pathwayFBData && pathwayFBData.lastCompletedLesson
+                      ? pathwayFBData.lastCompletedLesson
+                      : "0"
+                  }
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
       <Head>
         <title>
           {siteConfig.siteTitle} | {pathway?.name} | Lesson {currentLesson}
         </title>
       </Head>
       <section>
-        <div className="flex flex-row justify-between items-center space-x-5 border-[3px] border-black p-5 rounded-2xl">
+        <div className="flex flex-row justify-between items-center space-x-5 border-[3px] border-black md:p-5 p-3 rounded-2xl mx-3 md:mx-0">
           <div className="flex flex-col items-start">
-            <h1 className="text-black text-4xl font-semibold font-noto">
+            <h1 className="text-black md:text-4xl text-2xl font-semibold font-noto">
               {pathway.name}
             </h1>
-            <h3 className="text-black text-xl mt-3 font-noto">
+            <h3 className="text-black md:text-xl text-lg mt-3 font-noto">
               Lessons {currentLesson} of {allLessons.length}
             </h3>
-            <h5 className="text-black text-base mt-0 font-noto">
+            <h5 className="text-black md:text-base text-sm mt-0 font-noto">
               {frontmatter.description}
             </h5>
           </div>
           <div className="relative">
             <div className="flex flex-col items-center">
-              <div className="font-noto font-semibold">
+              <div className="font-noto font-semibold md:text-base text-sm">
                 {completedPercentage}% Completed
               </div>
               <ReactCustomizableProgressbar
@@ -210,7 +254,7 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
       </section>
       <section className="mt-4">
         <div className="flex flex-row flex-wrap md:flex-nowrap">
-          <div className="w-1/4">
+          <div className="hidden md:block w-1/4">
             <div className="mt-3">
               {allLessons.map((lesson) => {
                 return (
@@ -230,13 +274,23 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
               })}
             </div>
           </div>
-          <div className="w-3/4 px-8 markdown-content">
-            {stats && (
-              <Avatars
-                totalCompletes={stats[lessonNumber] ?? 0}
-                showToolTip={false}
-              />
-            )}
+          <div className="md:w-3/4 w-full md:px-8 px-6 markdown-content">
+            <button
+              onClick={() => {
+                toggleLessonsMenu();
+              }}
+              className="button-full w-full block md:hidden"
+            >
+              All Lesson
+            </button>
+            <div className="mt-3 md:mt-0">
+              {stats && (
+                <Avatars
+                  totalCompletes={stats[lessonNumber] ?? 0}
+                  showToolTip={false}
+                />
+              )}
+            </div>
             {hasMounted && mdxSource && <MDXRemote {...mdxSource} />}
             {frontmatter.restriction == "YesDialog" && (
               <YesDialog

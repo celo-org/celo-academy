@@ -30,26 +30,27 @@ function LessonItem({
   return (
     <div
       key={lesson.slug}
-      className={`py-6 px-8 hover:bg-gypsum rounded-xl mb-1 bg-light flex flex-row flex-nowrap justify-between items-center`}
+      className={`md:py-6 py-3 px-5 md:px-8 hover:bg-gypsum md:rounded-xl rounded-none mb-1 bg-light flex md:flex-row flex-col flex-nowrap justify-between md:items-center items-end`}
     >
       <Link
         href={isLocked ? "#" : `/pathway/${slug}/lesson-${lesson.lesson}`}
         className="text-decoration-none hover:cursor-pointer"
       >
-        <div className="font-noto text-black">
-          <div className="flex flex-row flex-nowrap items-center">
-            {isLocked ? <LockIcon /> : <StartIcon />}
-            <div className="flex flex-col">
-              <p className="font-bold text-lg pb-0 mb-0">
-                Lesson {lesson.lesson} - {lesson.title}
-              </p>
-              <p>{lesson.description}</p>
-            </div>
+        <div className="flex flex-row flex-nowrap items-center font-noto text-black">
+          <div className="w-1/6">{isLocked ? <LockIcon /> : <StartIcon />}</div>
+          <div className="flex flex-col w-5/6">
+            <p className="font-bold text-lg pb-0 mb-0">
+              Lesson {lesson.lesson} - {lesson.title}
+            </p>
+            <p>{lesson.description}</p>
           </div>
         </div>
       </Link>
-      <div>
+      <div className="flex flex-row items-center justify-center">
         {totalCompletes > 0 && <Avatars totalCompletes={totalCompletes} />}
+        <span className="text-black font-noto">
+          {totalCompletes} {totalCompletes <= 1 ? "person" : "people"} completed
+        </span>
       </div>
     </div>
   );

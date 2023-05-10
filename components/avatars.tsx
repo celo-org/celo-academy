@@ -47,7 +47,7 @@ const Avatars: React.FC<Props> = ({
   }
 
   return (
-    <div className="flex mb-5 -space-x-4 group relative">
+    <div className="flex md:mb-5 mb-0 -space-x-4 group relative">
       <img className="w-7 h-7 rounded-full " src={dataUri1} alt="avatar" />
       <img className="w-7 h-7 rounded-full" src={dataUri2} alt="avatar" />
 

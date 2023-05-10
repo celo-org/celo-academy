@@ -17,6 +17,7 @@ export const pathways = [
     timeToComplete: "2 weeks",
     preRequisites: "None 🔥",
     skillLevel: "Beginner",
+    tagLine: "learn flutter fundamentals",
   },
   // {
   //   key: "react-pathway",

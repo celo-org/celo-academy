@@ -88,13 +88,13 @@ export default function Home() {
         />
       </Head>
       <section>
-        <div className="w-full flex mt-16 flex-row items-center ">
-          <div className="w-1/2 bg-gypsum border-2 border-black px-8 rounded-xl py-16 mx-8">
+        <div className="w-full flex md:mt-16 mt-8 flex-row items-center ">
+          <div className="w-full md:w-1/2 bg-gypsum border-2 border-black md:px-8 px-4 rounded-xl md:py-16 py-8 md:mx-8 mx-4">
             <div className="text-2xl font-noto font-semibold text-center">
               Complete your profile
             </div>
             {/* <h5 className="mt-8 font-noto"></h5> */}
-            <div className="mt-3">
+            <div className="md:mt-3 mt-5">
               <InputField
                 value={email}
                 placeholder={"Email address"}
@@ -137,7 +137,7 @@ export default function Home() {
               )}
             </div>
           </div>
-          <div className="w-1/2">
+          <div className="w-1/2 hidden md:block">
             <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/authentication/illustration.svg" />
           </div>
         </div>

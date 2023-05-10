@@ -14,6 +14,7 @@ type Props = {
     preRequisites: string;
     skillLevel: string;
     timeToComplete: string;
+    tagLine: string;
   };
 };
 
@@ -25,11 +26,11 @@ function PathwayCard({ data }: Props) {
         key={data.key}
         className="border-2 border-black rounded-2xl w-full mt-5   pushable select-none bg-black border-none p-0 cursor-pointer outline-offset-4"
       >
-        <div className="front w-full rounded-2xl border-2 border-black flex flex-row justify-between py-2 px-6 bg-gypsum">
-          <div className="w-3/5">
-            <div className="py-5 px-6">
+        <div className="front w-full rounded-2xl border-2 border-black flex md:flex-row flex-col-reverse md:justify-between py-2 px-2 md:px-6 bg-gypsum">
+          <div className="md:w-3/5 w-full">
+            <div className="md:py-5 py-4 md:px-6 px-3">
               <p className="font-code font-bold mt-2 mb-4">
-                [ learn flutter fundamentals ]
+                [ {data.tagLine} ]
               </p>
               <h3 className="text-black font-noto text-3xl md:text-4xl">
                 {data.name}
@@ -68,10 +69,10 @@ function PathwayCard({ data }: Props) {
               </div>
             </div>
           </div>
-          <div className="w-2/5 flex justify-end items-start">
+          <div className="w-full md:w-2/5 flex justify-end items-start">
             <Img
               src={data.image}
-              className="rounded-2xl m-3"
+              className="rounded-2xl m-0 md:m-3"
               alt={data.name}
               width={400}
             />

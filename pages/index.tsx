@@ -33,7 +33,7 @@ export default function Home() {
           {/* <!-- Hero section --> */}
           <div id="hero" className="w-full">
             <section className="flex flex-row items-center">
-              <div className="lg:w-1/2 w-full mt-12 xl:mt-10 space-y-4 sm:space-y-6 px-6 text-center sm:text-left">
+              <div className="lg:w-1/2 w-full xl:mt-10 space-y-4 sm:space-y-6 px-6 text-center sm:text-left">
                 <span className="text-base text-gradient font-semibold uppercase text-black font-noto">
                   {siteConfig.homepage.titleHeader}
                 </span>

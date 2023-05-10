@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DialogLayout from "./common/DialogLayout";
+import DialogLayout from "../common/DialogLayout";
 
 type Props = {
   onSuccess: () => void;
